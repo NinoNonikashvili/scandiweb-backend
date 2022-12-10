@@ -7,7 +7,7 @@ class Db {
     public static ?Db $dbInstance = null;
 
     public function __construct(){
-        $this->pdo = new \PDO('mysql:host=localhost;  port = 3306; dbname=products_crud', 'root', '');
+        $this->pdo = new \PDO('mysql:host=localhost;  port = 3306; dbname=id19991675_test_db', 'id19991675_test_db1', 'N1injineri:*');
         $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         self::$dbInstance = $this;
     }
