@@ -30,15 +30,8 @@ class Db
     public $pdo=null;
     public static ?Db $dbInstance = null;
 
-    /**
-     * Constructor to initialize pdo object.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $dbProperties = 'mysql:host=localhost;  port = 3306; dbname=products_crud';
-        $this->pdo = new \PDO($dbProperties, 'root', '');
+    public function __construct(){
+        $this->pdo = new \PDO('mysql:host=localhost;  port = 3306; dbname=products_crud', 'root', '');
         $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         self::$dbInstance = $this;
     }
