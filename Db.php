@@ -1,41 +1,70 @@
 <?php
+/**
+ * Database file.
+ *
+ * PHP Version 8.1.10
+ *
+ * @category Scandiweb-Backend-PHP
+ * @package  Scandiweb-Backend-PHP
+ * @author   Nino Nonikashvili <nonikashvilinino8799@gmail.com>
+ * @license  no license
+ * @link     https://ninononikashvili.github.io/scandiweb-frontend
+ */
+
 namespace App;
 
-class Db {
+/**
+ * Class to communicate with database.
+ *
+ * PHP Version 8.1.10
+ *
+ * @category Scandiweb-Backend-PHP
+ * @package  Scandiweb-Backend-PHP
+ * @author   Nino Nonikashvili <nonikashvilinino8799@gmail.com>
+ * @license  no license
+ * @link     https://ninononikashvili.github.io/scandiweb-frontend
+ */
 
+class Db
+{
     public $pdo=null;
     public static ?Db $dbInstance = null;
 
-    public function __construct(){
-        $this->pdo = new \PDO('mysql:host=localhost;  port = 3306; dbname=products_crud', 'root', '');
+    /**
+     * Constructor to initialize pdo object.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $dbProperties = 'mysql:host=localhost;  port = 3306; dbname=products_crud';
+        $this->pdo = new \PDO($dbProperties, 'root', '');
         $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         self::$dbInstance = $this;
     }
-    public function getData(){
-        $statement = $this->pdo->prepare('SELECT * FROM scandiweb_products ORDER BY id DESC');
+    /**
+     * Get data from db
+     *
+     * @return the data from db in json format
+     */
+    public function getData()
+    {
+        $dbCommand = 'SELECT * FROM scandiweb_products ORDER BY id DESC';
+        $statement = $this->pdo->prepare($dbCommand);
         $statement->execute();
         return $statement->fetchAll(\PDO::FETCH_ASSOC);
     }
-    public function getSkus(){
-        $statement = $this->pdo->prepare('SELECT * FROM scandieb_skus');
-        $statement->execute();
-        return $statement->fetchAll(\PDO::FETCH_ASSOC);
-    }
-    public function updateSkus($skus){
-        $statement = $this->pdo->prepare('UPDATE scandieb_skus SET 
-        dvd = :dvd,
-        book = :book,
-        furniture = :furniture');
-        $statement->bindValue(':dvd', $skus->getDvd());
-        $statement->bindValue(':book', $skus->getBook());
-        $statement->bindValue(':furniture', $skus->getFurniture());
-        $statement->execute();
-
-    }
-    public function createData($product){
-        //create appropriate model for product type
-        $statement = $this->pdo->prepare('INSERT INTO scandiweb_products(name, sku, price, description_name, description_number, unit)
-        VALUES(:name, :sku, :price, :description_name, :description_number, :unit)');
+    /**
+     * Save the product in db.
+     *
+     * @param $product product which is to be stored in db table.
+     * 
+     * @return void
+     */
+    public function createData($product)
+    {
+        $dbCommand = 'INSERT INTO scandiweb_products(name, sku, price, description_name, description_number, unit) VALUES(:name, :sku, :price, :description_name, :description_number, :unit)';
+        $statement = $this->pdo->prepare($dbCommand);  
         $statement->bindValue(':name', $product->getName());
         $statement->bindValue(':sku', $product->getSku());
         $statement->bindValue(':price', $product->getPrice());
@@ -43,16 +72,21 @@ class Db {
         $statement->bindValue(':description_number', $product->getDescNumber());
         $statement->bindValue(':unit', $product->getUnit());
         $statement->execute();
-        
     }
-    public function deleteData($ids){
-        for($i=0; $i<sizeof($ids); $i++ ){
-            $statement = $this->pdo->prepare('DELETE  FROM scandiweb_products WHERE id = :id');
+    /**
+     * Delete data from db.
+     * 
+     * @param $ids id(s) of products which will be deleted
+     *
+     * @return void
+     */
+    public function deleteData($ids)
+    {
+        for ($i=0; $i<sizeof($ids); $i++) {
+            $dbCommand = 'DELETE FROM scandiweb_products WHERE id = :id';
+            $statement = $this->pdo->prepare($dbCommand);
             $statement->bindValue(':id', $ids[$i]);
             $statement->execute();
         }
-
-        
     }
-
 }
